@@ -28,7 +28,7 @@ base:any;
                return this.db.createStore(1, (evt:any) =>
                                       {     let objectStore = evt.currentTarget.result.createObjectStore('practicar', { keyPath: 'id', autoIncrement: true }, { unique: true});
                                             //crea el indice
-                                              objectStore.createIndex('name', "name", { unique: true});
+                                              objectStore.createIndex('nombreDueno', "nombreDueno", { unique: true});
                                               //objectStore.createIndex('email', 'email', { unique: true });
 
                                             });
@@ -50,11 +50,44 @@ guardar(p){
     		};
 
 leer(){
-          return this.db.getAll('practicar').then((people) => {
-                        console.log(people);
-                         return people;
-                    }, (error) => {
-                        console.log("error al leer la base");
+          let administra=document.getElementById("administra");
+          let abajo=document.getElementById("abajo");
+          let div=document.getElementById("citas");
+          let newDiv2 = document.createElement("div");
+          newDiv2.setAttribute('id', "paraborrar");
+          div.appendChild(newDiv2);
+
+        this.db.getAll('practicar').then((people) => {
+          people.map(function(n)
+                    {
+                            console.log(n);
+                            if(n.texto!=""){
+                                              let newDiv = document.createElement("li");
+
+                                                  newDiv.setAttribute('data-cita-id', n.id);
+                                                  newDiv.classList.add('list-group-item');
+                                                  newDiv.innerHTML=`<p class"font-weight-bold" >Mascota: <span class="font-weight-normal">${n.nombreMascota}</span></p>
+                                                                    <p class"font-weight-bold" >Nombre Dueño: <span class="font-weight-normal">${n.nombreDueno}</span></p>
+                                                                    <p class"font-weight-bold" >Telefono: <span class="font-weight-normal">${n.telefono}</span></p>
+                                                                    <p class"font-weight-bold" >Fecha: <span class="font-weight-normal">${n.fecha}</span></p>
+                                                                    <p class"font-weight-bold" >Hora: <span class="font-weight-normal">${n.hora}</span></p>
+                                                                    <p class"font-weight-bold" >Sintomas: <span class="font-weight-normal">${n.texto}</span></p>
+                                                                    <button type="button"  data-numero=${n.id} id="borrar" class="btn btn-danger">Borrar Registro</button>`;
+
+                                                      newDiv2.appendChild(newDiv);
+                                                       administra.textContent="Administra tus Citas";
+
+                                                        abajo.textContent="";
+
+
+
+                                         }else if(n.texto==""){
+                                                       administra.textContent="Agrega un Registro";
+                                                       abajo.classList.add("text-center");
+                                                       abajo.textContent="Registros vacios";
+                                                     }
+
+              });
                     });
 }
 
@@ -96,7 +129,7 @@ ngAfterViewInit()
                            };
                         let p:{}=this.objeto;
                         this.guardar(p);
-
+                        this.leer();
                         this.text.nativeElement.value="";
                          this.hora.nativeElement.value="";
                           this.fecha.nativeElement.value="";
