@@ -8,7 +8,8 @@ import { IndexedDBAngular} from 'indexeddb-angular';
 })
 export class AppComponent  implements AfterViewInit{
   objeto:{};
-
+datos:any;
+tt:any;
 //public leer:any='hola';
     @ViewChild('boton', { static: false}) card: ElementRef;
     @ViewChild('text', { static: false}) text: ElementRef;
@@ -37,10 +38,10 @@ base:any;
     };
 
 
-guardar(){
+guardar(p){
   console.log("hola");
 
-    			this.db.add('practicar', { name: 'name', email: 'email' }).then(() => {
+    			this.db.add('practicar', p).then(() => {
         		console.log("se guardo");
 
     				}, (error) => {
@@ -48,13 +49,80 @@ guardar(){
     				});
     		};
 
-
-
-
-ngAfterViewInit(){
-  this.base().then(()=>{
-    this.guardar()
-  })
-
+leer(){
+          return this.db.getAll('practicar').then((people) => {
+                        console.log(people);
+                         return people;
+                    }, (error) => {
+                        console.log("error al leer la base");
+                    });
 }
+
+
+borrar(){
+          this.db.delete('practicar', 3).then(() => {
+          // Do something after remove
+        }, (error) => {
+          console.log(error);
+        });
+}
+
+ngAfterViewInit()
+  {
+            this.renderer.listen(this.card.nativeElement, 'click', (s) =>
+            {
+              s.preventDefault();
+             let div=document.getElementById("citas");
+             while (div.hasChildNodes()) {
+                                         div.removeChild(div.firstChild);
+                                       };
+
+
+               let texto:any=  this.text.nativeElement.value;
+               let hora:any=  this.hora.nativeElement.value;
+               let fecha:any=  this.fecha.nativeElement.value;
+               let telefono:number=  this.telefono.nativeElement.value;
+               let nombreDueno:any=  this.nombreDueno.nativeElement.value;
+               let nombreMascota:any=  this.nombreMascota.nativeElement.value;
+
+
+                  this.objeto={
+                                  nombreDueno: nombreDueno,
+                                  nombreMascota: nombreMascota,
+                                  telefono: telefono,
+                                  fecha: fecha,
+                                  hora: hora,
+                                  texto: texto
+                           };
+                        let p:{}=this.objeto;
+                        this.guardar(p);
+
+                        this.text.nativeElement.value="";
+                         this.hora.nativeElement.value="";
+                          this.fecha.nativeElement.value="";
+                          this.telefono.nativeElement.value="";
+                          this.nombreDueno.nativeElement.value="";
+                          this.nombreMascota.nativeElement.value="";
+
+                  });
+
+
+
+
+
+
+        this.base().then(()=>
+        {
+        //  this.guardar();
+                // this.datos=this.leer();
+                // console.log(this.datos);
+                //   this.datos.then((e)=>{
+                //                   this.tt=e[0].name;
+                //                   console.log(this.tt);
+                //                 })
+
+
+      })
+
  }
+}
