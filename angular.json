@@ -24,14 +24,14 @@
               "src/assets"
             ],
             "styles": [
-             "src/styles.css",
-             "node_modules/bootstrap/dist/css/bootstrap.min.css"
-           ],
-           "scripts": [
-               "node_modules/jquery/dist/jquery.min.js",
-               "node_modules/jasmine-core/lib/jasmine-core/jasmine.js",
-               "node_modules/bootstrap/dist/js/bootstrap.min.js"
-             ],
+              "src/styles.css",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css"
+            ],
+            "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/jasmine-core/lib/jasmine-core/jasmine.js",
+              "node_modules/bootstrap/dist/js/bootstrap.min.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -124,6 +124,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "practicas"
+    }
+  },
+  "defaultProject": "practicas",
+  "cli": {
+    "analytics": "d25dc934-1b3d-494f-b9a1-6140a74f44f7"
+  }
 }

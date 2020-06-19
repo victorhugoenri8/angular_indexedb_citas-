@@ -21,6 +21,7 @@ tt:any;
     @ViewChild('citas') animateThis: ElementRef;
     @ViewChild('borrando', { static: false}) borrando: ElementRef;
 db:IndexedDBAngular = new IndexedDBAngular('practica', 1);
+
 base:any;
     constructor(private renderer: Renderer2,) {
       this.base= function()
@@ -45,11 +46,43 @@ guardar(p){
         		console.log("se guardo");
 
     				}, (error) => {
-        					console.log(error);
+        				//	console.log(error);
     				});
     		};
 
+borrarbase(){
+  //borra la base de datos
+  let administra=document.getElementById("administra");
+  let abajo=document.getElementById("abajo");
+      let borrarbase=document.getElementById("borrarbase");
+      borrarbase.onclick=()=>{
+        this.db.clear('practicar').then(() => {
+          this.limpiarDivDeCitas();
+                              console.log("se borro base de datos");
+                              administra.textContent="Agrega un Registro";
+                              abajo.classList.add("text-center");
+                              abajo.textContent="Registros vacios";
+                            // Do something after clear
+                        }, (error) => {
+                            console.log(error);
+                        });
+
+      };
+};
+
+limpiarDivDeCitas(){
+  let borrarli=document.querySelector("li");
+  let list= borrarli.parentNode;
+  while (list.hasChildNodes()) {
+                              list.removeChild(list.firstChild);
+                              }
+
+     //this.leer();
+}
+
+
 leer(){
+
           let administra=document.getElementById("administra");
           let abajo=document.getElementById("abajo");
           let div=document.getElementById("citas");
@@ -60,7 +93,7 @@ leer(){
         this.db.getAll('practicar').then((people) => {
           people.map(function(n)
                     {
-                            console.log(n);
+                          //  console.log(n);
                             if(n.texto!=""){
                                               let newDiv = document.createElement("li");
 
@@ -75,7 +108,8 @@ leer(){
                                                                     <button type="button"  data-numero=${n.id} id="borrar" class="btn btn-danger">Borrar Registro</button>`;
 
                                                       newDiv2.appendChild(newDiv);
-                                                       administra.textContent="Administra tus Citas";
+                                                       administra.innerHTML=`<h3>Administra tus Citas</h3>
+                                                                          <button type="button"  id="borrarbase" class="btn btn-info">Borrar Base de Datos</button>`;
 
                                                         abajo.textContent="";
 
@@ -87,14 +121,31 @@ leer(){
                                                        abajo.textContent="Registros vacios";
                                                      }
 
-              });
+                      });
+
+                       this.borrarbase();
+                      let borrar=document.querySelectorAll("button.btn.btn-danger");
+                        let self=this;
+                          borrar.forEach(function(i){
+                            i.addEventListener("click",()=>{
+
+                              self.borrar(Number(i.getAttribute("data-numero")));
+
+
+                                                                    //borramos el div de citas y volvemos a leer
+                                                                        self.limpiarDivDeCitas();
+
+                                                                            self.leer();
+                                              })
+                        })
                     });
 }
 
 
-borrar(){
-          this.db.delete('practicar', 3).then(() => {
-          // Do something after remove
+borrar(s){
+          this.db.delete('practicar', s).then(() => {
+          console.log("se borro registro correctamente");
+
         }, (error) => {
           console.log(error);
         });
@@ -102,6 +153,7 @@ borrar(){
 
 ngAfterViewInit()
   {
+  //  this.leer();
             this.renderer.listen(this.card.nativeElement, 'click', (s) =>
             {
               s.preventDefault();
@@ -146,16 +198,14 @@ ngAfterViewInit()
 
         this.base().then(()=>
         {
-        //  this.guardar();
-                // this.datos=this.leer();
-                // console.log(this.datos);
-                //   this.datos.then((e)=>{
-                //                   this.tt=e[0].name;
-                //                   console.log(this.tt);
-                //                 })
+          this.leer();
 
+          
 
       })
+
+
+
 
  }
 }
